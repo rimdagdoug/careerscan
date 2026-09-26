@@ -1,4 +1,5 @@
 package com.careerscan.careerscan.dto;
 
-public record ScanRequest(String url) {
-}
+public record ScanRequest(
+        String url
+) { }
