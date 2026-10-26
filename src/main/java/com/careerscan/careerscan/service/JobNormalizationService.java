@@ -3,9 +3,10 @@ package com.careerscan.careerscan.service;
 import com.careerscan.careerscan.model.ContractType;
 import com.careerscan.careerscan.model.Job;
 import com.careerscan.careerscan.model.RawJob;
+import org.springframework.stereotype.Service;
 
 import java.util.Locale;
-
+@Service
 public class JobNormalizationService {
     public Job normalize(RawJob rawJob){
         ContractType contractType = normalizeContractType(rawJob.contractType());
@@ -17,7 +18,7 @@ public class JobNormalizationService {
                 rawJob.description(),
                 rawJob.url(),
                 rawJob.publishedAt(),
-                "UNKNOWN"
+                "GREENHOUSE"
         );
     }
     private ContractType normalizeContractType(String contractType){
