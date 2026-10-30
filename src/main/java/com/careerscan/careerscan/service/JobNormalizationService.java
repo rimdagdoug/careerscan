@@ -30,52 +30,66 @@ public class JobNormalizationService {
         );
     }
 
+
     private ContractType normalizeContractType(
             String contractType,
             String title,
             String description
     ) {
-        // 1. Priorité au type de contrat fourni par la source.
-        ContractType normalizedType = normalizeExplicitContractType(contractType);
+        // 1. Priorité au type fourni par la source.
+        ContractType explicitType = normalizeExplicitContractType(contractType);
 
-        if (normalizedType != ContractType.OTHER) {
-            return normalizedType;
+        if (explicitType != ContractType.OTHER) {
+            return explicitType;
         }
 
-        // 2. Si le type est absent, rechercher des indices dans le titre
-        // et la description.
-        String text = ((title == null ? "" : title) + " "
-                + (description == null ? "" : description))
-                .toLowerCase(Locale.ROOT);
+        // 2. Analyser le titre en priorité.
+        ContractType titleType = detectContractType(title);
 
-        if (text.contains("apprenticeship")
-                || text.contains("apprentice")
-                || text.contains("alternance")
-                || text.contains("apprenti")) {
+        if (titleType != ContractType.OTHER) {
+            return titleType;
+        }
+
+        // 3. Analyser la description uniquement si nécessaire.
+        return detectContractType(description);
+    }
+
+    private ContractType detectContractType(String text) {
+        if (text == null || text.isBlank()) {
+            return ContractType.OTHER;
+        }
+
+        String normalized = text.toLowerCase(Locale.ROOT);
+
+        if (normalized.contains("apprenticeship")
+                || normalized.contains("apprentice")
+                || normalized.contains("alternance")
+                || normalized.contains("apprenti")) {
             return ContractType.APPRENTICESHIP;
         }
 
-        if (text.contains("internship")
-                || text.contains("intern")
-                || text.contains("stage")) {
+        if (normalized.contains("internship")
+                || normalized.contains("intern")
+                || normalized.contains("stage")) {
             return ContractType.INTERNSHIP;
         }
 
-        if (text.contains("fixed-term")
-                || text.contains("fixed term")
-                || text.contains("cdd")) {
+        if (normalized.contains("fixed-term")
+                || normalized.contains("fixed term")
+                || normalized.contains("cdd")) {
             return ContractType.CDD;
         }
 
-        if (text.contains("full-time")
-                || text.contains("full time")
-                || text.contains("permanent")
-                || text.contains("cdi")) {
+        if (normalized.contains("full-time")
+                || normalized.contains("full time")
+                || normalized.contains("permanent")
+                || normalized.contains("cdi")) {
             return ContractType.CDI;
         }
 
         return ContractType.OTHER;
     }
+
 
     private ContractType normalizeExplicitContractType(String contractType) {
         if (contractType == null || contractType.isBlank()) {

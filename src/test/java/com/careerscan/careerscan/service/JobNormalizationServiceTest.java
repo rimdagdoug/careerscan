@@ -83,4 +83,42 @@ class JobNormalizationServiceTest {
                 service.normalize(rawJob).contractType()
         );
     }
+
+
+    @Test
+    void shouldPrioritizeTitleOverDescription() {
+        RawJob rawJob = new RawJob(
+                "Développeur Java CDI",
+                "Example",
+                "Lyon",
+                null,
+                "We are looking for an internship candidate.",
+                "https://example.com/job",
+                null
+        );
+
+        assertEquals(
+                ContractType.CDI,
+                service.normalize(rawJob).contractType()
+        );
+    }
+
+    @Test
+    void shouldDetectApprenticeshipFromDescriptionWhenTitleIsNeutral() {
+        RawJob rawJob = new RawJob(
+                "Java Developer",
+                "Example",
+                "Lyon",
+                null,
+                "This position is available as an apprenticeship.",
+                "https://example.com/job",
+                null
+        );
+
+        assertEquals(
+                ContractType.APPRENTICESHIP,
+                service.normalize(rawJob).contractType()
+        );
+    }
+
 }
