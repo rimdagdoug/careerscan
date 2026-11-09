@@ -7,6 +7,7 @@ import com.careerscan.careerscan.model.RawJob;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 @Service
 public class JobNormalizationService {
@@ -68,9 +69,9 @@ public class JobNormalizationService {
             return ContractType.APPRENTICESHIP;
         }
 
-        if (normalized.contains("internship")
-                || normalized.contains("intern")
-                || normalized.contains("stage")) {
+        if (Pattern.compile("(?U)\\b(internship|intern|stage)\\b")
+                .matcher(normalized)
+                .find()) {
             return ContractType.INTERNSHIP;
         }
 
