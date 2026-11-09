@@ -121,4 +121,40 @@ class JobNormalizationServiceTest {
         );
     }
 
+    @Test
+    void shouldNotDetectInternshipFromInternationalKeyword() {
+        RawJob rawJob = new RawJob(
+                "Java Developer",
+                "Example",
+                "Lyon",
+                null,
+                "Work with international teams.",
+                "https://example.com/job",
+                null
+        );
+
+        assertEquals(
+                ContractType.OTHER,
+                service.normalize(rawJob).contractType()
+        );
+    }
+
+    @Test
+    void shouldNotDetectInternshipFromInternalKeyword() {
+        RawJob rawJob = new RawJob(
+                "Java Developer",
+                "Example",
+                "Lyon",
+                null,
+                "Develop internal tools and applications.",
+                "https://example.com/job",
+                null
+        );
+
+        assertEquals(
+                ContractType.OTHER,
+                service.normalize(rawJob).contractType()
+        );
+    }
+
 }
